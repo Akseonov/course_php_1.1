@@ -6,43 +6,60 @@ $result = mysqli_query($link, $sqlSelect);
 
 define('DIR_IMG', './gallery_img');
 define('DIR_LOG', './logs');
+define('DIR_TEMPLATES', './templates/');
 
-function renderTemplate($page, $strImg = '', $arrHtml = [])
-{
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+    if (isset($_GET['name'])){
+        $name = $_GET['name'];
+    }
+} else {
+    $page = 'gallery';
+}
+
+function render ($page, $params = []) {
+    return renderTemplate('main', [
+        'menu' => renderTemplate('menu'),
+        'content' => renderTemplate($page, $params)
+    ]);
+}
+
+function renderTemplate($page, $params = []) {
     ob_start();
-    include $page . ".php";
+    $tpl = DIR_TEMPLATES . $page . ".php";
+
+    if (!is_null($params)) {
+        extract($params);
+    }
+
+    include  $tpl;
     return ob_get_clean();
 }
 
-function logging () {
-    $day = date('G:i:s d:m:Y');
-    file_put_contents(DIR_LOG . "/log.txt", $day . "\r\n", FILE_APPEND);
-
-    $log = count(explode("\r\n", file_get_contents(DIR_LOG . "/log.txt")));
-    if ($log > 10) {
-        $dir = DIR_LOG . "/";
-        $count = count(scandir($dir)) - 2;
-        rename($dir . "log.txt", $dir . "log" . $count . ".txt");
-    }
-}
-
-function renderStr ($res) {
+function renderGallery ($res) {
     $str = '';
     $dir = DIR_IMG . "/";
     while ($row = mysqli_fetch_assoc($res)) {
-        $str .= "<a rel=\"gallery\" class=\"photo\" href=\"" . $dir . $row['big'] . "/" . $row['name'] . "\" target=\"_blank\">
+        $str .= "<a rel=\"gallery\" class=\"photo\" href=\"/?page=img&name=" . $row['name'] . "\" target=\"_blank\">
             <img src=\"" . $dir . $row['small'] . "/" . $row['name'] . "\" width=\"150\" height=\"100\">
         </a>";
     }
     return $str;
 }
 
-$strImg = renderStr($result);
+function renderImg ($name) {
+    $dir = DIR_IMG . "/";
 
-$gallery = renderTemplate('gallery', $strImg);
+    return "<img src=\"" . $dir . "big" . "/" . $name . "\">";
+}
 
-$arrHtml = array($gallery);
+switch ($page) {
+    case 'gallery':
+        $params['strGal'] = $strGal = renderGallery($result);
+        break;
+    case 'img':
+        $params['strImg'] = $strImg = renderImg($name);
+        break;
+}
 
-echo renderTemplate('main', $strImg, $arrHtml);
-
-logging();
+echo render($page, $params);
