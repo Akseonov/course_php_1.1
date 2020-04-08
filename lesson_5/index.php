@@ -1,8 +1,8 @@
 <?php
 
 $link = mysqli_connect('127.0.0.1', 'root', '', 'lesson_5');
-$sqlSelect = "SELECT `id`, `name`, `big`, `small`, `vews` FROM `users`";
-$result = mysqli_query($link, $sqlSelect);
+
+
 
 define('DIR_IMG', './gallery_img');
 define('DIR_LOG', './logs');
@@ -10,8 +10,8 @@ define('DIR_TEMPLATES', './templates/');
 
 if (isset($_GET['page'])) {
     $page = $_GET['page'];
-    if (isset($_GET['name'])){
-        $name = $_GET['name'];
+    if (isset($_GET['id'])){
+        $id = $_GET['id'];
     }
 } else {
     $page = 'gallery';
@@ -36,29 +36,38 @@ function renderTemplate($page, $params = []) {
     return ob_get_clean();
 }
 
-function renderGallery ($res) {
+function renderGallery ($link) {
     $str = '';
     $dir = DIR_IMG . "/";
-    while ($row = mysqli_fetch_assoc($res)) {
-        $str .= "<a rel=\"gallery\" class=\"photo\" href=\"/?page=img&name=" . $row['name'] . "\" target=\"_blank\">
-            <img src=\"" . $dir . $row['small'] . "/" . $row['name'] . "\" width=\"150\" height=\"100\">
-        </a>";
+    $sql = "SELECT `id`, `name`, `big`, `small`, `vews` FROM `users` ORDER BY `users`.`vews` DESC";
+    $result = mysqli_query($link, $sql);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $str .= "<div class='gallery_block'>
+                <a rel=\"gallery\" class=\"photo\" href=\"/?page=img&id=" . $row['id'] . "\">
+                    <img src=\"" . $dir . $row['small'] . "/" . $row['name'] . "\" width=\"150\" height=\"100\">
+                </a>
+                <H6>Просмотров: " . $row['vews'] . "</H6>
+            </div>";
     }
     return $str;
 }
 
-function renderImg ($name) {
+function renderImg ($link, $id) {
     $dir = DIR_IMG . "/";
-
-    return "<img src=\"" . $dir . "big" . "/" . $name . "\">";
+    $sqlSelect = "SELECT `id`, `name`, `big`, `small`, `vews` FROM `users` WHERE `id`=" . $id;
+    $sqlUpdate = "UPDATE `users` SET `vews` = `vews` + 1 WHERE `users`.`id` = " . $id;
+    $resultSelect = mysqli_query($link, $sqlSelect);
+    mysqli_query($link, $sqlUpdate);
+    $row = mysqli_fetch_assoc($resultSelect);
+    return "<img src=\"" . $dir . "big" . "/" . $row['name'] . "\">";
 }
 
 switch ($page) {
     case 'gallery':
-        $params['strGal'] = $strGal = renderGallery($result);
+        $params['strGal'] = $strGal = renderGallery($link);
         break;
     case 'img':
-        $params['strImg'] = $strImg = renderImg($name);
+        $params['strImg'] = $strImg = renderImg($link, $id);
         break;
 }
 
