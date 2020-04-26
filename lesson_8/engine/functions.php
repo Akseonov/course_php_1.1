@@ -19,7 +19,7 @@ function renderPage($page, $params = [])
     $file = DIR_TEMPLATES . $page . ".php";
 
     if (!file_exists($file)) {
-        $file = DIR_TEMPLATES . 'pages/content' . ".php";
+        $file = DIR_TEMPLATES . 'content' . ".php";
     }
 
     include $file;

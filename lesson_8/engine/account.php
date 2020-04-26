@@ -2,7 +2,7 @@
 
 function renderAccount($link)
 {
-    $strAcc = '';
+//    $strAcc = '';
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (empty($_POST['login']) || empty($_POST['password'])) {
             header('location: /?p=account');
@@ -21,6 +21,7 @@ function renderAccount($link)
 
         if (password_verify($password, $row['password'])) {
             $_SESSION['auth'] = true;
+            $_SESSION['login'] = $row['loggin'];
         }
         header('location: /?p=account');
     }
