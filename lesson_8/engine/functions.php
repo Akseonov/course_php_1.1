@@ -4,7 +4,7 @@ function render($page, $params = [])
 {
     return renderPage('main', [
         'menu' => renderPage('menu'),
-        'content' => renderPage($page, $params)
+        'content' => renderPage('content', $params)
     ]);
 }
 
@@ -19,7 +19,7 @@ function renderPage($page, $params = [])
     $file = DIR_TEMPLATES . $page . ".php";
 
     if (!file_exists($file)) {
-        $file = DIR_TEMPLATES . 'pages/gallery' . ".php";
+        $file = DIR_TEMPLATES . 'pages/content' . ".php";
     }
 
     include $file;

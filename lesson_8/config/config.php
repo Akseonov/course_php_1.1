@@ -18,6 +18,6 @@ $conf = array(
 
 include $_SERVER['DOCUMENT_ROOT'] . "/../engine/functions.php";
 include $_SERVER['DOCUMENT_ROOT'] . "/../engine/log.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/../engine/galleryFun.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/../engine/accountFun.php";
-include $_SERVER['DOCUMENT_ROOT'] . "/../engine/basketFun.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/../engine/gallery.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/../engine/account.php";
+include $_SERVER['DOCUMENT_ROOT'] . "/../engine/basket.php";
