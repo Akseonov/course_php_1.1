@@ -57,6 +57,24 @@ body {
 	display: flex;
 	justify-content: space-around;
 }
+.basket_total{
+	display: flex;
+	justify-content: space-around;
+}
+.basket_total form{
+	display: flex;
+	justify-content: space-around;
+}
+.form_order{
+	display: flex;
+	justify-content: center;
+}
+.form_order form{
+	width: 500px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
 .form_review{
 	display: flex;
 	justify-content: center;

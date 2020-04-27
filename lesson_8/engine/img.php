@@ -8,14 +8,14 @@ function renderImg($link, $id)
     $sqlUpdate = "UPDATE `img` SET `vews` = `vews` + 1 WHERE `img`.`id` = " . $id;
     $sqlReview = "SELECT `id`, `review`, `name`, `data`, `picture` FROM `review` WHERE `picture`=" . $id . " ORDER BY `review`.`id` DESC";
     $sqlInsert = "INSERT INTO `review` (`id`, `review`, `name`, `data`, `picture`) 
-    VALUES (NULL, '" . $_POST['review'] . "', '" . $_SESSION['login'] . "', '" . date('Y-m-d') . "', '" . $id . "')";
+    VALUES (NULL, '" . mysqli_real_escape_string($link, strip_tags($_POST['review'])) . "', '" . $_SESSION['user']['login'] . "', '" . date('Y-m-d') . "', '" . $id . "')";
 
     $resultSelect = mysqli_query($link, $sqlSelect);
     mysqli_query($link, $sqlUpdate);
     $result = mysqli_query($link, $sqlReview);
 
     while ($rowReview = mysqli_fetch_assoc($result)) {
-        $str .= "<div>
+        $str .= "<hr><div>
                 <div>
                     <p>" . $rowReview['name'] . "</p>
                     <p>" . $rowReview['data'] . "</p>
@@ -47,10 +47,10 @@ function renderImg($link, $id)
         }
     }
 
-    if (!empty($_SESSION['auth'])) {
+    if (checkAuth()) {
         $formReview = "<form method='post'>
         <textarea name='review'></textarea>
-        <input type='submit' value='Отправить'>
+        <input type='submit' value='Оставить отзыв'>
     </form>";
     } else {
         $formReview = '';

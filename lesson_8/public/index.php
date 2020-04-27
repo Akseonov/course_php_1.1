@@ -26,5 +26,3 @@ if (!function_exists($conf[$page])) {
 }
 
 echo render($page, $params);
-
-var_dump($_SESSION);
